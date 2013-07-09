@@ -200,9 +200,14 @@ function extractDownload(filePath, tmpPath) {
     console.log('Extracting zip contents')
 
     try {
-      var zip = new AdmZip(filePath)
-      zip.extractAllTo(tmpPath, true)
-      deferred.resolve(true)
+      if (!fs.existsSync(path.join( tmpPath, filePath.substr( filePath.lastIndexOf('/'), filePath.lastIndexOf('.'))))) {
+        var zip = new AdmZip(filePath)
+        zip.extractAllTo(tmpPath, true)
+        deferred.resolve(true)
+      } else {
+        console.log('Folder already exists. Continuing from there.')
+        deferred.resolve(true)
+      }
     } catch (err) {
       deferred.reject('Error extracting archive ' + err.stack)
     }
